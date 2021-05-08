@@ -263,7 +263,7 @@ glmCI <- function(model, min = .01, max = 100, cisep = "\U000022ef", ndigit = 2)
 #' @param sign_symbol If true, use significance indicator instead of p-value.
 #' @param split logical, report correlation and p combined (default)
 #' or split in list.
-#' @param space character to fill empty uper triangle.
+#' @param space character to fill empty upper triangle.
 #' @examples
 #' # with defaults
 #' cortestR(mtcars[, c("wt", "mpg", "qsec")], split = FALSE, sign_symbol = TRUE)
@@ -434,7 +434,7 @@ compare2numvars <- function(data, dep_vars, indep_var,
       ),
       desc_groups = paste(try(
         DESC(
-          x = .$Value, indep_var = .$Group,
+          x = .$Value, groupvar = .$Group,
           roundDig = round_desc, range = range,
           rangesep = rangesep, add_n = add_n
         ),

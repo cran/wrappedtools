@@ -182,11 +182,11 @@ a simple meansd(x, roundDig = some_level) is enough.</p>
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>                <span class="at">round_desc =</span> <span class="dv">3</span>)</span>
 <span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 x 5</span></span>
 <span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # Groups:   Variable [3]</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Variable desc_all    `am 0`                        `am 1`                p    </span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;fct&gt;    &lt;chr&gt;       &lt;chr&gt;                         &lt;chr&gt;                 &lt;chr&gt;</span></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 wt       3.32 (2.53~ &quot;Error in DESC(x = .$Value, ~ &quot; \n  unbenutztes Ar~ 0.001</span></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 mpg      19.2 (15.3~ &quot;Error in DESC(x = .$Value, ~ &quot; \n  unbenutztes Ar~ 0.002</span></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 disp     196 (121/3~ &quot;Error in DESC(x = .$Value, ~ &quot; \n  unbenutztes Ar~ 0.001</span></span></code></pre></div>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Variable desc_all         `am 0`           `am 1`           p    </span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;fct&gt;    &lt;chr&gt;            &lt;chr&gt;            &lt;chr&gt;            &lt;chr&gt;</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 wt       3.32 (2.53/3.66) 3.52 (3.44/3.84) 2.32 (1.90/2.81) 0.001</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 mpg      19.2 (15.3/22.8) 17.3 (14.8/19.2) 22.8 (20.6/30.4) 0.002</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 disp     196 (121/337)    276 (177/360)    120 (79/160)     0.001</span></span></code></pre></div>
 <p>To explain the *wrapper’ part of the package name, here is another example, using the ks.test as test for a Normal distribution, where ksnormal simply wrapps around the ks.test function:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>somedata <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">100</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ks.test</span>(<span class="at">x =</span> somedata, <span class="st">&#39;pnorm&#39;</span>, <span class="at">mean=</span><span class="fu">mean</span>(somedata), <span class="at">sd=</span><span class="fu">sd</span>(somedata))</span>
@@ -194,11 +194,42 @@ a simple meansd(x, roundDig = some_level) is enough.</p>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  One-sample Kolmogorov-Smirnov test</span></span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; data:  somedata</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; D = 0.039945, p-value = 0.9972</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; D = 0.093589, p-value = 0.3451</span></span>
 <span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; alternative hypothesis: two-sided</span></span>
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ksnormal</span>(somedata)</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.9972476</span></span></code></pre></div>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.3451249</span></span></code></pre></div>
+<p>Saving variable selections: Variables may fall into different groups: Some are following a Gaussian distribution, others are ordinal or factorial. There may be several grouping variables like treatment, gender… To refer to such variables, it is convenient to have their index and name stored. The name may be needed as character or , symbol, complex variable names like “size [cm]” may need to be surrounded by backtics in some function calls but must not have those in others.<br />
+Function FindVars finds columns in tibbles or dataframes, based on name pattern. This is comparable to the selection helpers in ‘tidyselect’, but does not select the content of matching variables, but names, positions, and count:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>gaussvars <span class="ot">&lt;-</span> <span class="fu">FindVars</span>(<span class="at">varnames =</span> <span class="fu">c</span>(<span class="st">&#39;wt&#39;</span>,<span class="st">&#39;mpg&#39;</span>),</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">allnames =</span> <span class="fu">colnames</span>(mtcars))</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>gaussvars</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $index</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1 6</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $names</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;mpg&quot; &quot;wt&quot; </span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $bticked</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;`mpg`&quot; &quot;`wt`&quot; </span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $symbols</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $symbols[[1]]</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; mpg</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $symbols[[2]]</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; wt</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $count</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 2</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="co">#Exclusion based on pattern</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>factorvars <span class="ot">&lt;-</span> <span class="fu">FindVars</span>(<span class="at">varnames =</span> <span class="fu">c</span>(<span class="st">&#39;a&#39;</span>,<span class="st">&#39;cy&#39;</span>),</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>                      <span class="at">allnames =</span> <span class="fu">colnames</span>(mtcars),</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>                      <span class="at">exclude =</span> <span class="fu">c</span>(<span class="st">&#39;t&#39;</span>))</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>factorvars<span class="sc">$</span>names</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;cyl&quot;  &quot;am&quot;   &quot;gear&quot; &quot;carb&quot;</span></span></code></pre></div>
 <p>This should give you the general idea, I’ll try to expand this intro over time…</p>
 </div>
 </div>

@@ -28,3 +28,14 @@ ks.test(x = somedata, 'pnorm', mean=mean(somedata), sd=sd(somedata))
 
 ksnormal(somedata)
 
+## ----example3-----------------------------------------------------------------
+gaussvars <- FindVars(varnames = c('wt','mpg'),
+                      allnames = colnames(mtcars))
+gaussvars
+
+#Exclusion based on pattern
+factorvars <- FindVars(varnames = c('a','cy'),
+                      allnames = colnames(mtcars),
+                      exclude = c('t'))
+factorvars$names
+
