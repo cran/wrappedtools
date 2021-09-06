@@ -40,3 +40,6 @@ NULL
 
 #' @import tidyverse
 NULL
+
+#' @importFrom forcats fct_lump_n fct_drop
+NULL

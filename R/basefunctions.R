@@ -52,17 +52,17 @@ roundR <- function(roundin, level = 2, smooth = FALSE,
     roundout[which(!is.na(roundout))] <-
       round(
         roundin[which(!is.na(roundin))] /
-          10^round(log10(max(abs(roundin), na.rm = TRUE)) - level)
+          10^ceiling(log10(max(abs(roundin), na.rm = TRUE)) - level)
       ) *
-        10^round(log10(max(abs(roundin), na.rm = TRUE)) - level)
+      10^ceiling(log10(max(abs(roundin), na.rm = TRUE)) - level)
   }
   if (textout) {
     roundout[which(!is.na(roundout))] <-
       formatC(roundout[which(!is.na(roundout))],
-        format = "f",
-        digits = roundlevel, drop0trailing = drop0,
-        big.mark = bigmark,
-        decimal.mark = decimalmark
+              format = "f",
+              digits = roundlevel, drop0trailing = drop0,
+              big.mark = bigmark,
+              decimal.mark = decimalmark
       )
   }
   return(roundout)
@@ -83,8 +83,8 @@ roundR <- function(roundin, level = 2, smooth = FALSE,
 markSign <- function(SignIn, plabel = c("n.s.", "+", "*", "**", "***")) {
   SignIn <- as.numeric(SignIn)
   SignOut <- cut(SignIn,
-    breaks = c(-Inf, .001, .01, .05, .1, 1),
-    labels = rev(plabel)
+                 breaks = c(-Inf, .001, .01, .05, .1, 1),
+                 labels = rev(plabel)
   )
   return(SignOut)
 }
@@ -102,7 +102,7 @@ markSign <- function(SignIn, plabel = c("n.s.", "+", "*", "**", "***")) {
 #' @param mark Should significance level be added after p (default=FALSE)?
 #' @param german_num change dot (default) to comma?
 #'
-#' @returns matrix with type character (default) or numeric,
+#' @returns vector or matrix (depending on type of pIn) with type character (default) or numeric,
 #' depending on parameter textout
 #'
 #' @examples
@@ -110,12 +110,18 @@ markSign <- function(SignIn, plabel = c("n.s.", "+", "*", "**", "***")) {
 #' formatP(0.012345, ndigits = 4)
 #' formatP(0.000122345, ndigits = 3, pretext = TRUE)
 #' @export
-formatP <- function(pIn, ndigits = 3, textout = TRUE, pretext = FALSE, mark = FALSE,
-                    german_num = FALSE) {
+formatP <- function(pIn, ndigits = 3, textout = TRUE, pretext = FALSE, 
+                    mark = FALSE, german_num = FALSE) {
   decimal.mark <- ifelse(german_num, ",", ".")
-  formatp <- ""
-  if (is.numeric(pIn)) {
-    if (!is.matrix(pIn)) {
+  pIn_is_matrix <- is.matrix(pIn)
+ if(pIn_is_matrix){
+   pIn <- apply(pIn,c(1,2),as.numeric)
+ } else{
+   pIn <- as.numeric(pIn)
+ }
+    formatp <- NA_character_
+  if (length(na.omit(pIn))>0) {
+    if (!pIn_is_matrix) {
       pIn <- matrix(pIn)
     }
     formatp <- apply(
@@ -134,7 +140,7 @@ formatP <- function(pIn, ndigits = 3, textout = TRUE, pretext = FALSE, mark = FA
         for (col_i in 1:ncol(pIn)) {
           formatp[row_i, col_i] <- paste(
             ifelse(pIn[row_i, col_i] < 10**(-ndigits),
-              "<", "="
+                   "<", "="
             ),
             formatp[row_i, col_i]
           )
@@ -153,6 +159,9 @@ formatP <- function(pIn, ndigits = 3, textout = TRUE, pretext = FALSE, mark = FA
     if (textout == FALSE & pretext == FALSE) {
       formatp <- apply(formatp, MARGIN = c(1, 2), as.numeric)
     }
+    if(!pIn_is_matrix){
+      formatp <- as.vector(formatp)
+    }
   }
   return(formatp)
 }
@@ -161,16 +170,16 @@ formatP <- function(pIn, ndigits = 3, textout = TRUE, pretext = FALSE, mark = FA
 #' Find numeric index and names of columns based on patterns
 #'
 #' \code{FindVars} looks up colnames (by default for data-frame rawdata)
-#' based on parts of names, using regular expressions.
+#' based on parts of names, using regular expressions. Be warned that
+#' special characters as e.g. `[` `(` need to be escaped or replaced by .
 #' Exlusion rules may be specified as well.
 #'
 #' @param varnames Vector of pattern to look for.
-#' @param allnames Vector of values to detect pattern in;
-#' by default, colnames(rawdata).
+#' @param allnames Vector of values to detect pattern in; by default, colnames(rawdata).
 #' @param exact Partial matching or exact only (adding ^ and $)?
 #' @param exclude Vector of pattern to exclude from found names.
 #' @param casesensitive Logical if case is respected in matching (default FALSE: a<>A)
-#' @param fixed Logical, treat pattern as regex?
+#' @param fixed Logical, match as is, argument is passed to [grep()]. 
 #' @export
 #' @return A list with index, names, backticked names, and symbols
 #' @examples
@@ -203,7 +212,7 @@ FindVars <- function(varnames, allnames = NULL,
   } else {
     for (i in 1:length(varnames)) {
       vars <- c(vars, grep(varnames[i], allnames_tmp,
-        fixed = fixed
+                           fixed = fixed
       ))
     }
     vars <- sort(unique(vars))
@@ -254,7 +263,7 @@ print_kable <- function(t, nrows = 30, caption = "",
         knitr::kable(
           t[
             (1 + (block_i - 1) * nrows):
-            min(nrow(t), block_i * nrows),
+              min(nrow(t), block_i * nrows),
             c(1, (2 + (col_i - 1) * ncols):min((1 + col_i * ncols), ncol(t)))
           ],
           row.names = FALSE,
@@ -294,10 +303,10 @@ pdf_kable <- function(.input, width1 = 6,
                       escape = TRUE) {
   ncols <- ncol(.input)
   out <- knitr::kable(.input,
-    format = "latex", booktabs = TRUE,
-    linesep = "",
-    escape = escape, caption = caption,
-    align = c("l", rep("c", ncols - 1))
+                      format = "latex", booktabs = TRUE,
+                      linesep = "",
+                      escape = escape, caption = caption,
+                      align = c("l", rep("c", ncols - 1))
   ) %>%
     kableExtra::kable_styling(
       position = tposition,
@@ -307,7 +316,7 @@ pdf_kable <- function(.input, width1 = 6,
       )
     ) %>%
     kableExtra::column_spec(-1, # border_left = TRUE,
-      width = paste0((twidth - width1) / (ncols - 1), "cm"),
+                            width = paste0((twidth - width1) / (ncols - 1), "cm"),
     ) %>%
     kableExtra::column_spec(1, bold = TRUE, width = paste0(width1, "cm")) %>%
     kableExtra::row_spec(0, bold = TRUE)

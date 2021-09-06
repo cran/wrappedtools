@@ -58,7 +58,7 @@ meansd <- function(x, roundDig = 2, drop0 = FALSE, groupvar = NULL,
           length(na.omit(x))
         }))
     }
-    out <- paste(meansd[, 1], meansd[, 2], sep = "\u00B1")
+    out <- paste(meansd[, 1], meansd[, 2], sep = " \u00B1 ")
     if (range) {
       out <- paste0(
         out, rangesep, " [",
@@ -98,6 +98,8 @@ meansd <- function(x, roundDig = 2, drop0 = FALSE, groupvar = NULL,
 #' median_quart(x = mtcars$wt)
 #' # with additional options
 #' median_quart(x = mtcars$wt, groupvar = mtcars$am, add_n = TRUE)
+#' data(faketrial)
+#' median_quart(x=faketrial$`Biomarker 1 [units]`,groupvar = faketrial$Treatment)
 #' @export
 median_quart <- function(x, nround = NULL, probs = c(.25, .5, .75),
                          qtype = 8, roundDig = 2, drop0 = FALSE,
