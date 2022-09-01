@@ -6,11 +6,12 @@
 \usage{
 FindVars(
   varnames,
-  allnames = NULL,
+  allnames = colnames(rawdata),
   exact = FALSE,
   exclude = NA,
   casesensitive = TRUE,
-  fixed = FALSE
+  fixed = FALSE,
+  return_symbols = FALSE
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ FindVars(
 \item{casesensitive}{Logical if case is respected in matching (default FALSE: a<>A)}
 
 \item{fixed}{Logical, match as is, argument is passed to \code{\link[=grep]{grep()}}.}
+
+\item{return_symbols}{Should names be reported as symbols additionally? (Default FALSE)}
 }
 \value{
 A list with index, names, backticked names, and symbols
@@ -32,8 +35,8 @@ A list with index, names, backticked names, and symbols
 \description{
 \code{FindVars} looks up colnames (by default for data-frame rawdata)
 based on parts of names, using regular expressions. Be warned that
-special characters as e.g. \code{[} \code{(} need to be escaped or replaced by .
-Exlusion rules may be specified as well.
+special characters as e.g. \code{[} \code{(} need to be escaped or replaced by \code{.}
+Exclusion rules may be specified as well.
 }
 \examples{
 FindVars(varnames = c("^c", "g"), allnames = colnames(mtcars))

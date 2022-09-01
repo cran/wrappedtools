@@ -52,7 +52,8 @@ size of dots rather than absolute correlation.}
 A ggplot object, allowing further styling.
 }
 \description{
-Print graphical representation of a correlation matrix.
+\code{ggcormat} makes the same correlation matrix as \link{cortestR}
+and graphically represents it in a plot
 }
 \examples{
 coeff_pvalues <- cortestR(mtcars[, c("wt", "mpg", "qsec", "hp")],
@@ -60,9 +61,9 @@ coeff_pvalues <- cortestR(mtcars[, c("wt", "mpg", "qsec", "hp")],
 )
 # focus on coefficients:
 ggcormat(cor_mat = coeff_pvalues$corout, maxpoint = 5)
-# size take from p-value:
+# size taken from p-value:
 ggcormat(
   cor_mat = coeff_pvalues$corout,
-  p_mat = coeff_pvalues$pout, maxpoint = 5
-)
+  p_mat = coeff_pvalues$pout, maxpoint = 5)
+
 }

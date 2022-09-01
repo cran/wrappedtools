@@ -5,7 +5,7 @@
 \title{Compute absolute and relative frequencies.}
 \usage{
 cat_desc_stats(
-  quelle,
+  source = NULL,
   separator = " ",
   return_level = TRUE,
   ndigit = 0,
@@ -13,11 +13,12 @@ cat_desc_stats(
   singleline = FALSE,
   percent = TRUE,
   prettynum = FALSE,
-  .german = FALSE
+  .german = FALSE,
+  quelle = NULL
 )
 }
 \arguments{
-\item{quelle}{Data for computation.}
+\item{source}{Data for computation. Previously "quelle".}
 
 \item{separator}{delimiter between results per level, preset as ' '.}
 
@@ -35,6 +36,8 @@ cat_desc_stats(
 
 \item{.german}{logical, should "." and "," be used as bigmark and decimal?
 Sets prettynum to TRUE.}
+
+\item{quelle}{deprecated, retained for compatibility, use 'source' instead.}
 }
 \value{
 Structure depends on parameter return_level:

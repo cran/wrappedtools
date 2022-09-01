@@ -21,6 +21,16 @@ print_kable(t, nrows = 30, caption = "", ncols = 100, ...)
 No return value, called for side effects.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}}
+}
+\details{
+package flextable is a more powerful alternative
+
 \code{print_kable} formats and prints tibbles/df's in markdown with splitting
 into sub-tables with repeated caption and header.
+}
+\examples{
+\dontrun{
+print_kable(mtcars, caption = "test")
+}
 }
