@@ -28,14 +28,12 @@ NULL
 #' @import rlang
 NULL
 
-#' @importFrom tidyr gather spread separate nest
+#' @importFrom tidyr separate nest pivot_longer pivot_wider
 NULL
 
 #' @importFrom utils data
 NULL
 
-#' @import tidyverse
-NULL
 
 #' @importFrom forcats fct_lump_n fct_drop
 NULL
