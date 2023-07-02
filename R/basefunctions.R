@@ -121,11 +121,11 @@ formatP <- function(pIn, ndigits = 3, textout = TRUE, pretext = FALSE,
                     add.surprisal = FALSE, sprecision = 1) {
   decimal.mark <- ifelse(german_num, ",", ".")
   pIn_is_matrix <- is.matrix(pIn)
- if(pIn_is_matrix){
-   pIn <- apply(pIn,c(1,2),as.numeric)
- } else{
-   pIn <- as.numeric(pIn)
- }
+  if(pIn_is_matrix){
+    pIn <- apply(pIn,c(1,2),as.numeric)
+  } else{
+    pIn <- as.numeric(pIn)
+  }
   formatp <- NA_character_
   if (length(na.omit(pIn))>0) {
     if (!pIn_is_matrix) {
@@ -183,13 +183,17 @@ formatP <- function(pIn, ndigits = 3, textout = TRUE, pretext = FALSE,
 
 #' Find numeric index and names of columns based on patterns
 #'
+#' `r lifecycle::badge('superseded')`
+#' 
+#'
 #' \code{FindVars} looks up colnames (by default for data-frame rawdata)
 #' based on parts of names, using regular expressions. Be warned that
 #' special characters as e.g. `[` `(` need to be escaped or replaced by `.`
 #' Exclusion rules may be specified as well.
+#' New function [ColSeeker()] extends this by adding class-checks.
 #'
 #' @param varnames Vector of pattern to look for.
-#' @param allnames Vector of values to detect pattern in; by default, colnames(rawdata).
+#' @param allnames Vector of values to detect pattern in; by default: colnames(rawdata).
 #' @param exact Partial matching or exact only (adding ^ and $)?
 #' @param exclude Vector of pattern to exclude from found names.
 #' @param casesensitive Logical if case is respected in matching (default FALSE: a<>A)
@@ -248,11 +252,11 @@ FindVars <- function(varnames, allnames = colnames(rawdata),
   }
   if(return_symbols) {
     return_list <- list(
-    index = vars,
-    names = allnames[vars],
-    bticked = bt(allnames[vars]),
-    symbols = rlang::syms(allnames[vars]),
-    count = length(vars))
+      index = vars,
+      names = allnames[vars],
+      bticked = bt(allnames[vars]),
+      symbols = rlang::syms(allnames[vars]),
+      count = length(vars))
   } else {
     return_list <- list(
       index = vars,
@@ -262,6 +266,93 @@ FindVars <- function(varnames, allnames = colnames(rawdata),
   }
   return(return_list)
 }
+
+
+#' Find numeric index and names of columns based on type and patterns
+#'
+#' \code{ColSeeker} looks up colnames (by default for tibble rawdata)
+#' based on type and parts of names, using regular expressions. 
+#' Be warned that special characters as e.g. `[` `(` need to be escaped or replaced by `.`
+#' Exclusion rules may be specified as well.
+#'
+#' @param data tibble or data.frame, where columns are to be found; by default rawdata 
+#' @param namepattern Vector of pattern to look for.
+#' @param varclass Only columns of defined type are returned
+#' @param exclude Vector of pattern to exclude from found names.
+#' @param excludeclass Exclude columns of specified class
+#' @param casesensitive Logical if case is respected in matching (default FALSE: a<>A)
+#' @param returnclass Logical if classes should be included in output
+#' 
+#' @export
+#' @return A list with index, names, and backticked names, optionally the classes as well
+#' @examples
+#' ColSeeker(data = mtcars, namepattern = c("^c", "g"))
+#' ColSeeker(data = mtcars, namepattern = c("^c", "g"), exclude = "r")
+#' rawdata <- mtcars
+#' ColSeeker(namepattern = c("^c", "g"), varclass="numeric")
+ColSeeker <- function(data=rawdata,
+                      namepattern = '.',
+                      varclass = NULL, 
+                      exclude = NULL, 
+                      excludeclass = NULL,
+                      casesensitive = TRUE,
+                      returnclass = FALSE) {
+  allclasses <- sapply(sapply(data,class),paste,collapse = '+')
+  # allclasses <- allclasses[which(allclasses!='ordered')]
+  allnames_tmp <- allnames <- colnames(data)
+  if (!casesensitive) {
+    namepattern <- tolower(namepattern)
+    allnames_tmp <- tolower(allnames)
+    exclude <- tolower(exclude)
+  }
+  vars <- numeric()
+  evars <- numeric()
+  for (i in 1:length(namepattern)) {
+    vars <- c(vars, grep(namepattern[i], allnames_tmp,
+                         fixed = FALSE
+    ))
+  }
+  vars <- sort(unique(vars))
+  if (!is.null(exclude)) {
+    for (i in 1:length(exclude))
+    {
+      evars <- c(evars, grep(exclude[i], allnames_tmp))
+    }
+    evars <- unique(na.omit(match(
+      sort(unique(evars)), vars
+    )))
+    if (length(evars) > 0) {
+      vars <- vars[-evars]
+    }
+  }
+  vars <- unique(vars)
+  
+  if(!is.null(varclass)){
+    vars_typed <- which(grepl(pattern = varclass,allclasses))
+    vars <- vars[which(vars %in% vars_typed)]
+  }
+  if(!is.null(excludeclass)){
+    vars_typed <- which(!grepl(excludeclass,allclasses))
+    vars <- vars[which(vars %in% vars_typed)]
+  }
+  if(returnclass){
+    return_list <- list(
+      index = vars,
+      names = allnames[vars],
+      bticked = bt(allnames[vars]),
+      count = length(vars),
+      varclass = allclasses[vars])
+  } else {
+    return_list <- list(
+      index = vars,
+      names = allnames[vars],
+      bticked = bt(allnames[vars]),
+      count = length(vars))
+  }
+  return(return_list)
+}
+
+
 
 #' Enhanced kable with definable number of rows/columns for splitting
 #'
@@ -447,5 +538,5 @@ tab.search <- function(searchdata = rawdata, pattern,
 #' @return a character vector of s-values
 #' @export
 surprisal <- function(p, precision = 1){
-round(-log2(as.numeric(p)),precision) |> as.character()
+  round(-log2(as.numeric(p)),precision) |> as.character()
 }
