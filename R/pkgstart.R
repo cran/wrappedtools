@@ -42,3 +42,15 @@ NULL
 
 #' @importFrom forcats fct_lump_n fct_drop
 NULL
+
+#' @importFrom grDevices boxplot.stats
+NULL
+
+#' @importFrom stats prop.test
+NULL
+
+#' @importFrom DescTools BinomRatioCI
+NULL
+
+#' @importFrom flextable flextable_to_rmd
+NULL

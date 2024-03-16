@@ -180,7 +180,8 @@ pairwise_ordcat_test <- function(dep_var, indep_var, adjmethod = "fdr", plevel =
 #' Kolmogorov-Smirnov-Test against Normal distribution
 #'
 #' \code{ksnormal} is a convenience function around \link{ks.test}, testing against
-#' Normal distribution
+#' Normal distribution.
+#' If less than 2 values are provided, NA is returned.
 #'
 #' @param x Vector of data to test.
 #'
@@ -196,16 +197,20 @@ pairwise_ordcat_test <- function(dep_var, indep_var, adjmethod = "fdr", plevel =
 #' ksnormal(x = mtcars$wt)
 #' @export
 ksnormal <- function(x) {
+  if(length(na.omit(x))>1){
   suppressWarnings(
-    ksout <- ks.test(x, "pnorm", mean(x, na.rm = TRUE), sd(x, na.rm = TRUE),
+    assign("ksout",ks.test(x, "pnorm", mean(x, na.rm = TRUE), sd(x, na.rm = TRUE),
                      exact = FALSE
-    )$p.value)
+    )$p.value))
+  }else{
+    ksout <- NA
+  }
   return(ksout)
 }
 
 #' Confidence interval for generalized linear models
 #'
-#' \code{glm_CI} computes and formats of CIs for glm.
+#' \code{glm_CI} computes and formats CIs for glm.
 #'
 #' @usage glmCI(model, min = .01, max = 100, cisep = '\U000022ef', ndigit=2)
 #'
@@ -437,7 +442,8 @@ compare2numvars <- function(data, dep_vars, indep_var,
     as_tibble()
   if(nlevels(data_l$Group)!=2){
     stop(paste0('Other than 2 groups provided for ',indep_var,': ',
-                paste(levels(data_l$Group),collapse='/')))
+                paste(levels(data_l$Group),collapse='/'),
+                ". Look into function compare_n_numvars."))
   }
   data_l <- data_l |> 
     filter(!is.na(Group))
@@ -544,7 +550,7 @@ compare2qualvars <- function(data, dep_vars, indep_var,
     stop(paste("Independent variable",indep_var,
                "has",data |> pull(indep_var) |> nlevels(),
                "levels but must have exactly 2.",
-               "Look into function compare_n_numvars."))
+               "Look into function compare_n_qualvars."))
   }
   for(var_i in dep_vars){
     if (!(is.factor(data |> pull(var_i)))) {
@@ -1166,3 +1172,4 @@ compare_n_numvars <- function(.data = rawdata,
          raw = t))
 }
 utils::globalVariables('p_wcox_t_out')
+
