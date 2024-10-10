@@ -2,7 +2,7 @@
 % Please edit documentation in R/basefunctions.R
 \name{print_kable}
 \alias{print_kable}
-\title{Enhanced \link{kable} with definable number of rows and/or columns for splitting}
+\title{Enhanced \link[knitr:kable]{knitr::kable} with definable number of rows and/or columns for splitting}
 \usage{
 print_kable(t, nrows = 30, caption = "", ncols = 100, ...)
 }
@@ -15,7 +15,7 @@ print_kable(t, nrows = 30, caption = "", ncols = 100, ...)
 
 \item{ncols}{number of columns (100) before splitting.}
 
-\item{...}{Further arguments passed to \link{kable}.}
+\item{...}{Further arguments passed to \link[knitr:kable]{knitr::kable}.}
 }
 \value{
 No return value, called for side effects.

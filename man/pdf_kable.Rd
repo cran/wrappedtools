@@ -2,7 +2,7 @@
 % Please edit documentation in R/basefunctions.R
 \name{pdf_kable}
 \alias{pdf_kable}
-\title{Enhanced kable with latex}
+\title{Enhanced \link[knitr:kable]{knitr::kable} with latex}
 \usage{
 pdf_kable(
   .input,
@@ -30,7 +30,7 @@ pdf_kable(
 
 \item{foot}{footnote}
 
-\item{escape}{see kable}
+\item{escape}{see \link[knitr:kable]{knitr::kable}}
 }
 \value{
 A character vector of the table source code.

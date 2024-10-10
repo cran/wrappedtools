@@ -141,7 +141,8 @@ formatP <- function(pIn, ndigits = 3, textout = TRUE, pretext = FALSE,
         formatC, format = "f",
         digits = ndigits, drop0trailing = FALSE,
         decimal.mark = decimal.mark
-      )
+      )|> 
+      apply(MARGIN=c(1,2), gsub, pattern = ".*NA.*",replacement = "")
     if (pretext) {
       for (row_i in 1:nrow(pIn)) {
         for (col_i in 1:ncol(pIn)) {
@@ -150,25 +151,36 @@ formatP <- function(pIn, ndigits = 3, textout = TRUE, pretext = FALSE,
                    "<", "="
             ),
             formatp[row_i, col_i]
-          )
+          ) |> 
+            gsub(pattern = "NA.*",replacement = "", x=_) 
         }
       }
+      formatp <-  
+        apply(formatp,MARGIN=c(1,2), gsub, pattern = ".*NA.*",replacement = "")
     }
     if (mark) {
       formatp <- matrix(
         paste(
           formatp,
-          apply(gsub("[\\<\\=]", "", formatp), c(1, 2), markSign)
+          apply(gsub("[\\<\\=]", "", formatp) |> 
+                  gsub(",",".",x=_), c(1, 2), markSign)
         ),
         ncol = ncol(pIn)
-      )
+      ) |> apply(MARGIN = c(1, 2), 
+                       gsub, pattern = ".*NA.*",replacement = "")
     }
     if(add.surprisal){
-      s <- apply(pIn,MARGIN = c(1,2),surprisal, precision = sprecision)
+      s <- apply(pIn,MARGIN = c(1,2),surprisal, precision = sprecision) 
       if(german_num){
-        s <- str_replace(s,'\\.',',')
+        s <- gsub('\\.',',',s)
       }
-      formatp <- paste0(formatp,', s = ',s)
+      for (row_i in 1:nrow(pIn)) {
+        for (col_i in 1:ncol(pIn)) {
+          formatp[row_i, col_i] <- paste0(formatp[row_i, col_i],
+            ', s = ',s[row_i,col_i])|> 
+        gsub(pattern = ".*NA.*",replacement = "",x=_)
+        }
+      }
     }
     if (textout == FALSE & pretext == FALSE & add.surprisal == FALSE) {
       formatp <- apply(formatp, MARGIN = c(1, 2), as.numeric)
@@ -176,6 +188,8 @@ formatP <- function(pIn, ndigits = 3, textout = TRUE, pretext = FALSE,
     if(!pIn_is_matrix){
       formatp <- as.vector(formatp)
     }
+  } else{
+    formatP=""
   }
   return(formatp)
 }
@@ -209,6 +223,7 @@ formatP <- function(pIn, ndigits = 3, textout = TRUE, pretext = FALSE,
 #' FindVars(varnames = c("^c", "g"), allnames = colnames(mtcars), exclude = "r")
 ## rawdata <- mtcars
 ## FindVars(varnames = c("^c", "g"))
+
 FindVars <- function(varnames, allnames = colnames(rawdata),
                      exact = FALSE, exclude = NA, casesensitive = TRUE,
                      fixed = FALSE, return_symbols=FALSE) {
@@ -270,7 +285,7 @@ FindVars <- function(varnames, allnames = colnames(rawdata),
 }
 
 
-#' Find numeric index and names of columns based on type and patterns
+#' Find numeric index and names of columns based on class(es) and patterns
 #'
 #' \code{ColSeeker} looks up colnames (by default for tibble rawdata)
 #' based on type and parts of names, using regular expressions. 
@@ -286,12 +301,15 @@ FindVars <- function(varnames, allnames = colnames(rawdata),
 #' @param returnclass Logical if classes should be included in output
 #' 
 #' @export
-#' @return A list with index, names, and backticked names, optionally the classes as well
+#' @return A list with index, names, backticked names, and count;  optionally the classes as well
 #' @examples
 #' ColSeeker(data = mtcars, namepattern = c("^c", "g"))
 #' ColSeeker(data = mtcars, namepattern = c("^c", "g"), exclude = "r")
-## rawdata <- mtcars
-## ColSeeker(namepattern = c("^c", "g"), varclass="numeric")
+#' assign("rawdata", mtcars)
+#' ColSeeker(namepattern = c("^c", "g"), varclass="numeric")
+#' num_int_data <- data.frame(num1=rnorm(10), num2=runif(10), int1=1:10, int2=11:20)
+#' ColSeeker(num_int_data, varclass="numeric")  # integers are not found
+#' ColSeeker(num_int_data, varclass=c("numeric","integer")) 
 ColSeeker <- function(data=rawdata,
                       namepattern = '.',
                       varclass = NULL, 
@@ -367,7 +385,7 @@ ColSeeker <- function(data=rawdata,
 
 
 
-#' Enhanced [kable] with definable number of rows and/or columns for splitting
+#' Enhanced [knitr::kable] with definable number of rows and/or columns for splitting
 #'
 #' @description
 #' `r lifecycle::badge('superseded')`
@@ -381,7 +399,7 @@ ColSeeker <- function(data=rawdata,
 #' @param nrows number of rows (30) before splitting.
 #' @param ncols number of columns (100) before splitting.
 #' @param caption header.
-#' @param ... Further arguments passed to [kable].
+#' @param ... Further arguments passed to [knitr::kable].
 #' @return No return value, called for side effects.
 #' 
 #' @examples 
@@ -419,7 +437,7 @@ print_kable <- function(t, nrows = 30, caption = "",
   }
 }
 
-#' Enhanced kable with latex
+#' Enhanced [knitr::kable] with latex
 #'
 #' \code{pdf_kable} formats tibbles/df's for markdown
 #'
@@ -430,7 +448,7 @@ print_kable <- function(t, nrows = 30, caption = "",
 #' @param innercaption subheader
 #' @param caption header
 #' @param foot footnote
-#' @param escape see kable
+#' @param escape see [knitr::kable]
 #'
 #'@return A character vector of the table source code. 
 #' @export
