@@ -18,9 +18,9 @@ compare2numvars(
   n = FALSE,
   add_n = FALSE,
   singleline = TRUE,
-  indentor = "     ",
+  indentor = "   ",
   ci = FALSE,
-  n_boot = 10^4
+  n_boot = 10^3
 )
 }
 \arguments{
@@ -48,7 +48,7 @@ compare2numvars(
 
 \item{add_n}{add n to descriptive statistics. Will automatically be set to TRUE, if singleline = FALSE and n = TRUE to keep it for the long table format.}
 
-\item{singleline}{Put all group levels in a single line (default) or below each other.}
+\item{singleline}{Put all computed stats in a single line (default) or below each other.}
 
 \item{indentor}{Optional text element to indent descriptivestats when using singleline = FALSE. Defaults to "     ".}
 
@@ -81,7 +81,8 @@ compare2numvars(
   gaussian = FALSE, add_n = TRUE, range = TRUE
 )
 # If dependent variable has more than 2 levels, consider fct_lump:
-mtcars |> dplyr::mutate(gear=factor(gear) |> forcats::fct_lump_n(n=1)) |> 
-compare2numvars(dep_vars="wt",indep_var="gear",gaussian=TRUE)
+mtcars |>
+  dplyr::mutate(gear = factor(gear) |> forcats::fct_lump_n(n = 1)) |>
+  compare2numvars(dep_vars = "wt", indep_var = "gear", gaussian = TRUE)
 
 }
