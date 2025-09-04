@@ -10,8 +10,8 @@ Description: The main functionalities of 'wrappedtools' are:
     descriptive statistics and p-values; creating specialized plots for 
     correlation matrices. Functions were mainly written for my own daily work or 
     teaching, but may be of use to others as well.
-Version: 0.9.8
-Date: 2025-07-07
+Version: 0.9.9
+Date: 2025-09-04
 Authors@R: c(
     person(given = "Andreas",
            family = "Busjahn",
@@ -35,17 +35,17 @@ Imports: stats, boot, knitr, coin, utils, dplyr, tidyr, forcats, purrr,
         glue, rlang, stringr, ggplot2, tibble, tidyr, kableExtra,
         lifecycle, broom, rlist, DescTools, flextable, nortest
 Depends: R (>= 4.2)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 LazyData: true
 VignetteBuilder: knitr
 Suggests: rmarkdown, testthat, ggrepel
 URL: https://github.com/abusjahn/wrappedtools
 BugReports: https://github.com/abusjahn/wrappedtools/issues
 NeedsCompilation: no
-Packaged: 2025-07-10 15:50:35 UTC; abusj
+Packaged: 2025-09-04 17:56:55 UTC; abusj
 Author: Andreas Busjahn [cre, aut] (ORCID:
     <https://orcid.org/0000-0001-9650-6919>),
   Franziska Eidloth [aut],
   Bilal Asser [aut]
 Repository: CRAN
-Date/Publication: 2025-07-10 16:10:02 UTC
+Date/Publication: 2025-09-04 18:30:02 UTC
